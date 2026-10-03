@@ -102,7 +102,7 @@ export default function AgentDashboard() {
         actions={<Button icon="refresh" onClick={reload}>Refresh</Button>}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="In flight" value={number(counts.inflight)} icon="truck" tone="info"
           foot="Placed through Out for Delivery" />
         <StatTile label="Buyers served" value={number(counts.buyers)} icon="store" />

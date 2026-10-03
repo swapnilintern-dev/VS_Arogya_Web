@@ -93,7 +93,7 @@ export default function MarketingOutlets() {
         )}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Outlets" value={number(stats.total)} icon="store" />
         <StatTile label="Active" value={number(stats.active)} icon="check" foot={`${stats.total - stats.active} inactive`} />
         <StatTile label="Pincodes covered" value={number(stats.pincodes)} icon="pin" tone="info" />

@@ -50,7 +50,24 @@ export async function removeItem(productId) {
   return getCart();
 }
 
+/**
+ * Empties the cart.
+ *
+ * POST /clear-cart answers 200 but does not always persist: the controller
+ * does `user.cart.length = 0`, which Mongoose does not reliably register as a
+ * change on a DocumentArray, so save() can be a no-op. We therefore re-read
+ * the cart and, if anything survived, remove the lines individually — that
+ * path uses splice() and does persist.
+ */
 export async function clearCart() {
   await post(ENDPOINTS.cart.clear);
-  return [];
+  let cart = await getCart();
+  if (cart.length === 0) return [];
+
+  for (const line of cart) {
+    // eslint-disable-next-line no-await-in-loop
+    await del(ENDPOINTS.cart.remove(line.product._id));
+  }
+  cart = await getCart();
+  return cart;
 }

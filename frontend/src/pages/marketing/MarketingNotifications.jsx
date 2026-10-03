@@ -183,7 +183,7 @@ export default function MarketingNotifications() {
         )}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Reachable vendors" value={number(audience.data?.reachableVendors ?? 0)} icon="users"
           foot={`${number(audience.data?.eligibleVendors ?? 0)} eligible · rest have push off`} />
         <StatTile label="Campaigns sent" value={number(totals.campaigns)} icon="bell" />

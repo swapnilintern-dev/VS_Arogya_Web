@@ -12,6 +12,7 @@ import { riderProfileFrom, listDelivered } from '../../services/deliveryService'
 import { currency, number } from '../../utils/format';
 import { daysUntil } from '../../utils/dates';
 import { initials } from '../../utils/format';
+import ChangePasswordCard from '../../features/ChangePasswordCard';
 
 /** The rider's own account and delivery record. */
 export default function DeliveryProfile() {
@@ -70,6 +71,8 @@ export default function DeliveryProfile() {
               <Button variant="danger-soft" icon="logout" block onClick={signOut}>Sign out</Button>
             </CardBody>
           </Card>
+
+          <ChangePasswordCard />
 
           <Card>
             <CardHead title="Shortcuts" />

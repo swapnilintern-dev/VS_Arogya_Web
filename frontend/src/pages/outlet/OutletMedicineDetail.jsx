@@ -91,7 +91,7 @@ export default function OutletMedicineDetail() {
         </Note>
       )}
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Units on hand" value={number(totalStock)} icon="box"
           foot={totalStock === stockMirror ? 'Matches the stored total' : `Stored total: ${number(stockMirror)}`} />
         <StatTile label="Lots held" value={number(batchCount)} icon="layers"

@@ -67,7 +67,7 @@ export default function OutletDashboard() {
         )}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         {stock.loading ? <CardSkeleton count={4} /> : (
           <>
             <StatTile label="Medicines held" value={number(stats.skus)} icon="pill"

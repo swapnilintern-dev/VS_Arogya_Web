@@ -92,7 +92,7 @@ export default function DeliveryHistory() {
         actions={<Button icon="refresh" onClick={reload}>Refresh</Button>}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Deliveries in range" value={number(scoped.length)} icon="check" />
         <StatTile label="Order value delivered" value={currency(value)} icon="rupee" />
         <StatTile label="All time" value={number(data?.length ?? 0)} icon="truck" foot="Total completed" />

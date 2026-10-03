@@ -139,7 +139,7 @@ export default function BatchManager({ productId, product, onStockChanged }) {
     <>
       {confirmUi}
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Lots on record" value={number(stats.lots)} icon="layers" />
         <StatTile label="Units available" value={number(stats.available)} icon="box"
           foot="This is the medicine’s stock figure" />

@@ -16,6 +16,7 @@ import { getAccount, approveVendor, rejectVendor } from '../../services/vendorSe
 import { APPROVAL_STATUS } from '../../constants/orders';
 import { formatDate, daysUntil } from '../../utils/dates';
 import { initials } from '../../utils/format';
+import SendNotificationCard from '../../features/SendNotificationCard';
 
 const STATUS_TONE = {
   [APPROVAL_STATUS.APPROVED]: 'success',
@@ -183,6 +184,12 @@ export default function AdminVendorDetail() {
               </Button>
             </CardBody>
           </Card>
+
+          <SendNotificationCard
+            recipientId={vendor._id}
+            recipientType="vendor"
+            recipientName={vendor.store_name}
+          />
         </div>
       </div>
     </>

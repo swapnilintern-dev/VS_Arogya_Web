@@ -84,7 +84,7 @@ export default function MarketingDashboard() {
         )}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         {loading ? <CardSkeleton count={4} /> : (
           <>
             <StatTile label="New orders" value={number(stats.pending)} icon="receipt"

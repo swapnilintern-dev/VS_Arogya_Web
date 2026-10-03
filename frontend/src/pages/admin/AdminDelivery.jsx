@@ -78,7 +78,7 @@ export default function AdminDelivery() {
         sub="Create agent logins and see who is on the road right now."
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Total agents" value={number(agents.data?.length ?? 0)} icon="truck" />
         <StatTile label="Deliveries in progress" value={number(onDuty)} icon="pin" tone="info"
           foot="Orders currently Out for Delivery" />

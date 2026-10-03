@@ -167,7 +167,7 @@ export default function MarketingCoupons() {
         )}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Total coupons" value={number(data?.length ?? 0)} icon="tag" />
         <StatTile label="Live now" value={number(active.length)} icon="check" tone="accent" foot="Active and not expired" />
         <StatTile label="Total redemptions" value={number(redemptions)} icon="percent" foot="Across every code" />

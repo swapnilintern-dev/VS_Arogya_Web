@@ -10,6 +10,7 @@ import { API_BASE_URL, API_PREFIX } from '../../config/api';
 import { MEDICINE_CATEGORIES } from '../../constants/catalog';
 import { ORDER_FLOW } from '../../constants/orders';
 import { initials } from '../../utils/format';
+import ChangePasswordCard from '../../features/ChangePasswordCard';
 
 const OPERATIONS = [
   ['truck', 'Delivery agents', 'Create logins and see the live dispatch queue.', '/admin/delivery'],
@@ -117,6 +118,8 @@ export default function AdminSettings() {
               <Button variant="danger-soft" icon="logout" block onClick={signOut}>Sign out</Button>
             </CardBody>
           </Card>
+
+          <ChangePasswordCard />
 
           <Card>
             <CardHead title="Operations" />

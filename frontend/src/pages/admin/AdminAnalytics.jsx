@@ -106,7 +106,7 @@ export default function AdminAnalytics() {
         actions={<Button icon="refresh" onClick={() => { orders.reload(); revenue.reload(); }}>Refresh</Button>}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Realised revenue" value={currencyCompact(revenue.data || 0)} icon="rupee"
           foot="Delivered orders only" />
         <StatTile label="Average order value" value={currency(analysis.avgOrderValue)} icon="chart"

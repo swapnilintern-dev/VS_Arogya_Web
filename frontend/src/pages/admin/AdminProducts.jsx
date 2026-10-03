@@ -104,7 +104,7 @@ export default function AdminProducts() {
         actions={<Button icon="refresh" onClick={reload}>Refresh</Button>}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Total SKUs" value={number(stats.total)} icon="pill" />
         <StatTile label="Active" value={number(stats.active)} icon="check" foot="Visible to vendors" />
         <StatTile label="Low stock" value={number(stats.low)} icon="alert" tone="warning" foot="At or below reorder threshold" />

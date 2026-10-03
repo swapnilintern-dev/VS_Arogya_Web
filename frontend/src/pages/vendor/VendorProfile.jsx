@@ -16,6 +16,7 @@ import { deleteAccount } from '../../services/authService';
 import { ORDER_STATUS } from '../../constants/orders';
 import { currency, number, initials } from '../../utils/format';
 import { formatDate, daysUntil } from '../../utils/dates';
+import ChangePasswordCard from '../../features/ChangePasswordCard';
 
 const LINKS = [
   ['receipt', 'My orders', 'Track and reorder', '/shop/orders'],
@@ -114,6 +115,8 @@ export default function VendorProfile() {
               <Button variant="danger-soft" icon="logout" block onClick={signOut}>Sign out</Button>
             </CardBody>
           </Card>
+
+          <ChangePasswordCard />
 
           <Card>
             <CardHead title="Shortcuts" />

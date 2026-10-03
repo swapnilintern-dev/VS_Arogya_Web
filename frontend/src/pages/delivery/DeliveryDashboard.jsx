@@ -70,7 +70,7 @@ export default function DeliveryDashboard() {
         actions={<Button icon="refresh" onClick={reload}>Refresh</Button>}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="On the road" value={number(counts.active)} icon="truck" tone="info"
           foot="Out for delivery right now" />
         <StatTile label="Ready for pickup" value={number(counts.next)} icon="box" tone="warning"

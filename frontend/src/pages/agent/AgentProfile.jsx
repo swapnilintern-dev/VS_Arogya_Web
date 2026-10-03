@@ -10,6 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getAgentProfile } from '../../services/vendorService';
 import { formatDate } from '../../utils/dates';
 import { initials } from '../../utils/format';
+import ChangePasswordCard from '../../features/ChangePasswordCard';
 
 /** The agent's own account, fetched live so it matches what marketing registered. */
 export default function AgentProfile() {
@@ -56,6 +57,8 @@ export default function AgentProfile() {
               <Button variant="danger-soft" icon="logout" block onClick={signOut}>Sign out</Button>
             </CardBody>
           </Card>
+
+          <ChangePasswordCard />
 
           <Note tone="info">
             One agent, one pincode. Contact the marketing team to change your assigned area — it cannot be

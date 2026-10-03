@@ -11,6 +11,7 @@ import { useAuth } from '../../context/AuthContext';
 import { getOutletProfile, listOutletStock, listOutletOrders } from '../../services/outletService';
 import { currency, number, initials } from '../../utils/format';
 import { formatDate } from '../../utils/dates';
+import ChangePasswordCard from '../../features/ChangePasswordCard';
 
 /** The outlet's own account — read-only; marketing owns these details. */
 export default function OutletProfile() {
@@ -74,6 +75,8 @@ export default function OutletProfile() {
               <Button variant="danger-soft" icon="logout" block onClick={signOut}>Sign out</Button>
             </CardBody>
           </Card>
+
+          <ChangePasswordCard />
 
           <Card>
             <CardHead title="Shortcuts" />

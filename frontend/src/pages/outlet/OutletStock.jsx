@@ -100,7 +100,7 @@ export default function OutletStock() {
         actions={<Button icon="refresh" onClick={reload}>Refresh</Button>}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Medicines" value={number(stats.skus)} icon="pill" />
         <StatTile label="Units on hand" value={number(stats.units)} icon="box" />
         <StatTile label="Stock at selling price" value={currency(stats.value)} icon="rupee" />

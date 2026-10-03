@@ -189,7 +189,7 @@ export default function MarketingProducts() {
         )}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Total SKUs" value={number(stats.total)} icon="pill" />
         <StatTile label="Active" value={number(stats.active)} icon="check"
           foot={`${stats.total - stats.active} hidden from vendors`}

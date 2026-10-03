@@ -84,7 +84,7 @@ export default function AdminDashboard() {
         </div>
       </section>
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         {loading ? <CardSkeleton count={4} /> : (
           <>
             <StatTile label="Orders in pipeline" value={number(stats.openPipeline)} icon="receipt" tone="info"

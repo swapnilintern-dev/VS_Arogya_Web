@@ -120,7 +120,7 @@ export default function MarketingBatches() {
         actions={<Button icon="refresh" onClick={reload}>Refresh</Button>}
       />
 
-      <div className="grid grid--kpi section">
+      <div className="grid grid--kpi section stagger">
         <StatTile label="Lots on record" value={number(stats.lots)} icon="layers" />
         <StatTile label="Units in stock" value={number(stats.units)} icon="box" foot="Across every live lot" />
         <StatTile label="Inventory at cost" value={currency(stats.value)} icon="rupee" foot="Available units × purchase price" />

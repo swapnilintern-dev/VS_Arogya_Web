@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// The website is a standalone SPA. It never proxies to the Flutter app and it
-// never embeds a server of its own — the existing self/server backend is the
-// only backend, reached through src/config/api.js once VITE_USE_MOCK=false.
+// The website is a standalone SPA that builds to static files (deployed as a
+// Render Static Site — see render.yaml). It embeds no server of its own: the
+// backend is its own repo and is reached over HTTPS through src/config/api.js,
+// whose base URL comes from VITE_API_BASE_URL at build time.
 export default defineConfig({
   plugins: [react()],
   server: { port: 5180, open: false },
