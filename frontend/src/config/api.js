@@ -17,7 +17,8 @@ const DEFAULT_BASE_URL = 'https://backend-new-0ady.onrender.com';
 
 /**
  * Backend origin. Override with VITE_API_BASE_URL in .env (see .env.example),
- * e.g. http://localhost:3000 to develop against `npm run dev` in server/.
+ * e.g. http://localhost:3000 to develop against a locally running backend
+ * (the backend is its own repo: swapnilintern-dev/backend_new).
  */
 export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE_URL).replace(/\/+$/, '');
 
