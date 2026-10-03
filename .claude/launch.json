@@ -4,7 +4,7 @@
     {
       "name": "vs-arogya-web",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": ["run", "dev", "--prefix", "frontend"],
       "port": 5180
     }
   ]

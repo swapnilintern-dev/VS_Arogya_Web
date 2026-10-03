@@ -1,0 +1,111 @@
+/* ==========================================================================
+   VS Arogya — design tokens
+
+   The palette is AppColors from lib/vendor_registration_screen.dart and the
+   spacing / radius / shadow scales are AppSpacing / AppRadius / AppShadows from
+   lib/theme/app_theme.dart. Reproduced exactly so the web console and the
+   mobile app read as one product.
+   ========================================================================== */
+
+:root {
+  /* Brand ------------------------------------------------------------------ */
+  --brand-500: #4caf82;   /* AppColors.primary    */
+  --brand-600: #3d9b70;
+  --brand-700: #2e7d5e;   /* AppColors.darkGreen  */
+  --brand-800: #24624a;
+  --brand-050: #f0faf5;   /* AppColors.lighterGreen */
+  --brand-100: #e8f5ee;   /* AppColors.lightGreenBg */
+  --brand-200: #ddeee6;   /* AppColors.border      */
+
+  /* Surfaces --------------------------------------------------------------- */
+  --page: #f5f7f5;        /* AppColors.pageBg */
+  --surface: #ffffff;
+  --surface-alt: #fafbfa;
+  --surface-sunken: #f1f4f2;
+  --overlay: rgba(15, 30, 24, 0.42);
+
+  /* Text ------------------------------------------------------------------- */
+  --text: #1a1a2e;        /* AppColors.darkText */
+  --text-muted: #5d6b64;
+  --text-subtle: #757575; /* AppColors.greyText */
+  --text-inverse: #ffffff;
+
+  /* Lines ------------------------------------------------------------------ */
+  --border: #e3e9e5;
+  --border-strong: #cfd9d3;
+  --border-brand: #ddeee6;
+
+  /* Status ----------------------------------------------------------------- */
+  --success: #2e7d5e;
+  --success-bg: #e8f5ee;
+  --warning: #e8710a;     /* ExpiryTier.warning */
+  --warning-bg: #fdf1e3;
+  --caution: #b98900;     /* ExpiryTier.caution */
+  --danger: #e53935;      /* AppColors.error */
+  --danger-strong: #b3261e;
+  --danger-bg: #fdecea;
+  --info: #3b82f6;        /* MarketingColors.blue */
+  --info-bg: #eaf2fe;
+  --accent: #8e24aa;      /* marketing purple accent */
+  --accent-bg: #f6eafa;
+
+  /* Spacing — the app's 4pt rhythm ----------------------------------------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* Radius — AppRadius ------------------------------------------------------ */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-btn: 10px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  /* Shadows — AppShadows ---------------------------------------------------- */
+  --shadow-card: 0 1px 3px rgba(26, 26, 46, 0.03), 0 6px 16px rgba(26, 26, 46, 0.05);
+  --shadow-raised: 0 12px 28px rgba(26, 26, 46, 0.12);
+  --shadow-pop: 0 18px 44px rgba(26, 26, 46, 0.18);
+
+  /* Type -------------------------------------------------------------------- */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  --fs-xs: 11.5px;
+  --fs-sm: 12.5px;
+  --fs-base: 13.5px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 21px;
+  --fs-2xl: 26px;
+  --fs-3xl: 32px;
+
+  /* Motion — AppDuration / AppCurves ---------------------------------------- */
+  --t-fast: 140ms;
+  --t-base: 220ms;
+  --t-slow: 420ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  /* Overshoot for things that "arrive" — a toast, a modal, the logo on load. */
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /* Brand gradient, taken off the logo's mortar: deep green core, lighter rim. */
+  --brand-grad: linear-gradient(140deg, var(--brand-500), var(--brand-700));
+  --brand-grad-soft: linear-gradient(140deg, var(--brand-050), var(--brand-100));
+  --brand-ring: 0 0 0 3px rgba(76, 175, 130, 0.22);
+
+  /* Layout ------------------------------------------------------------------ */
+  --sidebar-w: 244px;
+  --topbar-h: 60px;
+  --content-max: 1560px;
+  --z-sticky: 40;
+  --z-drawer: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+}
