@@ -5,3 +5,9 @@ dist-ssr
 .env.local
 *.local
 .DS_Store
+
+# The backend is its own repo (swapnilintern-dev/backend_new) and lives in
+# medicine/self/server. The copy here is a stale duplicate — git was tracking
+# it as an empty gitlink, which showed up as a permanent "modified" entry and
+# broke every push. This site only needs to be deployed as a frontend.
+server/
