@@ -89,3 +89,12 @@ export const VENDOR_NAV = [
   { to: '/shop/orders', label: 'My orders' },
   { to: '/shop/saved', label: 'Saved' },
 ];
+
+/**
+ * A guest (email-OTP sign-in with no approved vendor account) can only browse.
+ * Orders, Saved and the cart all sit behind the server's auth gate, which
+ * refuses a guest token outright.
+ */
+export const GUEST_NAV = [
+  { to: '/shop', label: 'Browse medicines', end: true },
+];

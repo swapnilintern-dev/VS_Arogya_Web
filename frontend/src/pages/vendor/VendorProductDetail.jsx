@@ -31,7 +31,7 @@ const ICON_BY_CATEGORY = {
 export default function VendorProductDetail() {
   const { id } = useParams();
   const cart = useCart();
-  const { pricingTier } = useAuth();
+  const { pricingTier, canSeePrices } = useAuth();
   const toast = useToast();
   const { data: product, loading, error, reload } = useAsync(() => getProduct(id), [id]);
   const all = useAsync(listProducts, []);
@@ -40,14 +40,17 @@ export default function VendorProductDetail() {
   const [image, setImage] = useState(0);
   const [saved, setSaved] = useState(false);
 
-  // Saved state lives on the vendor's account (GET /all-saved).
+  // Saved state lives on the vendor's account (GET /all-saved), which is
+  // behind the auth gate — a guest has no account and the server refuses the
+  // call, so it is never made.
   useEffect(() => {
+    if (!canSeePrices) return undefined;
     let alive = true;
     listSavedProducts()
       .then((rows) => { if (alive) setSaved(rows.some((p) => p._id === id)); })
       .catch(() => {});
     return () => { alive = false; };
-  }, [id]);
+  }, [id, canSeePrices]);
 
   const related = useMemo(
     () => (all.data || []).filter((p) => p.active && p.category === product?.category && p._id !== id).slice(0, 4),
@@ -172,6 +175,12 @@ export default function VendorProductDetail() {
                 {product.cold_stored === 'yes' && <Badge tone="info">Cold chain</Badge>}
               </div>
 
+              {!canSeePrices ? (
+                <Note tone="info" icon="store">
+                  <strong>Prices are for registered pharmacies.</strong> Register your business and, once
+                  the VS Arogya team approves it, distributor prices and ordering open up here.
+                </Note>
+              ) : (
               <div>
                 {tierOff > 0 && (
                   <p className="field__label" style={{ marginBottom: 2 }}>{TIER_LABEL[pricingTier]}</p>
@@ -192,6 +201,7 @@ export default function VendorProductDetail() {
                 </div>
                 <p className="field__hint">Price per {product.packInfo?.toLowerCase() || 'pack'}, GST included</p>
               </div>
+              )}
 
               {out
                 ? <Note tone="danger">Out of stock. Check back or contact your area agent for an ETA.</Note>
@@ -206,7 +216,13 @@ export default function VendorProductDetail() {
                 </Note>
               )}
 
-              {!out && (
+              {!canSeePrices && (
+                <Button variant="primary" size="lg" block icon="store" to="/register">
+                  Register as a vendor
+                </Button>
+              )}
+
+              {canSeePrices && !out && (
                 <>
                   <div className="between">
                     <span className="field__label">Quantity</span>
@@ -226,9 +242,11 @@ export default function VendorProductDetail() {
                 </>
               )}
 
-              <Button variant="secondary" block icon="heart" onClick={toggleSave}>
-                {saved ? 'Saved' : 'Save for later'}
-              </Button>
+              {canSeePrices && (
+                <Button variant="secondary" block icon="heart" onClick={toggleSave}>
+                  {saved ? 'Saved' : 'Save for later'}
+                </Button>
+              )}
             </CardBody>
           </Card>
 

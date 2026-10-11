@@ -3,10 +3,11 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import Icon from '../feedback/Icon';
 import Button from '../common/Button';
 import { SearchInput } from '../forms/Input';
-import { VENDOR_NAV } from '../../constants/navigation';
+import { VENDOR_NAV, GUEST_NAV } from '../../constants/navigation';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { initials } from '../../utils/format';
+import GuestBanner from '../../features/GuestBanner';
 import cn from '../../utils/cn';
 
 /**
@@ -15,7 +16,7 @@ import cn from '../../utils/cn';
  * internal dashboards while sharing the same palette and components.
  */
 export default function StorefrontLayout() {
-  const { session, signOut } = useAuth();
+  const { session, signOut, isGuest } = useAuth();
   const { itemCount } = useCart();
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
@@ -40,7 +41,7 @@ export default function StorefrontLayout() {
           </Link>
 
           <nav className="store__nav">
-            {VENDOR_NAV.map((item) => (
+            {(isGuest ? GUEST_NAV : VENDOR_NAV).map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
@@ -57,21 +58,33 @@ export default function StorefrontLayout() {
           </form>
 
           <div className="store__actions">
-            <Button variant="ghost" icon="bell" to="/shop/notifications" aria-label="Notifications" />
-            <Link to="/shop/cart" className="cart-pill">
-              <Icon name="cart" size={15} />
-              Cart
-              {itemCount > 0 && <span className="cart-pill__count">{itemCount}</span>}
-            </Link>
-            <Link to="/shop/profile" className="avatar" title={session?.name}>
-              {initials(session?.name)}
-            </Link>
-            <Button variant="ghost" icon="logout" onClick={signOut} aria-label="Sign out" />
+            {isGuest ? (
+              /* A guest token is refused by every protected route, so the cart,
+                 inbox and profile are not offered at all — only the way out of
+                 being a guest. */
+              <Button variant="primary" size="sm" icon="store" to="/register">Register</Button>
+            ) : (
+              <>
+                <Button variant="ghost" icon="bell" to="/shop/notifications" aria-label="Notifications" />
+                <Link to="/shop/cart" className="cart-pill">
+                  <Icon name="cart" size={15} />
+                  Cart
+                  {itemCount > 0 && <span className="cart-pill__count">{itemCount}</span>}
+                </Link>
+                <Link to="/shop/profile" className="avatar" title={session?.name}>
+                  {initials(session?.name)}
+                </Link>
+              </>
+            )}
+            <Button variant="ghost" icon="logout" onClick={signOut} aria-label={isGuest ? 'Sign out' : 'Sign out'} />
           </div>
         </div>
       </header>
 
-      <main className="store__body"><Outlet /></main>
+      <main className="store__body">
+        <GuestBanner />
+        <Outlet />
+      </main>
 
       <footer className="store__foot">
         <div className="store__foot-inner">

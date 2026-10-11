@@ -29,7 +29,7 @@ const ICON_BY_CATEGORY = {
  */
 export default function ProductCard({ product }) {
   const cart = useCart();
-  const { pricingTier } = useAuth();
+  const { pricingTier, canSeePrices } = useAuth();
   const toast = useToast();
 
   const out = stockStatusOf(product.stock, product.lowThreshold) === STOCK_STATUS.OUT;
@@ -58,7 +58,7 @@ export default function ProductCard({ product }) {
           : <Icon name={ICON_BY_CATEGORY[product.category] || 'pill'} size={40} strokeWidth={1.2} />}
         <span className="pcard__flags">
           {product.badge && <Badge tone="accent">{product.badge}</Badge>}
-          {off > 0 && <Badge tone="success">{off}% off</Badge>}
+          {canSeePrices && off > 0 && <Badge tone="success">{off}% off</Badge>}
           {product.prescriptionRequired && <Badge tone="warning">Rx</Badge>}
           {product.cold_stored === 'yes' && <Badge tone="info">2–8°C</Badge>}
         </span>
@@ -68,14 +68,26 @@ export default function ProductCard({ product }) {
         <span className="pcard__brand">{product.brand}</span>
         <Link to={`/shop/products/${product._id}`} className="pcard__title">{product.title}</Link>
         <span className="pcard__pack">{product.packInfo}</span>
-        <div className="pcard__price-row">
-          <span className="pcard__price">{currency(payable)}</span>
-          {tierOff > 0
-            ? <span className="pcard__mrp">{currency(product.price)}</span>
-            : off > 0 && <span className="pcard__mrp">{currency(product.mrp)}</span>}
-        </div>
-        {tierOff > 0 && (
-          <Badge tone="accent">{Math.round(tierOff)}% {TIER_LABEL[pricingTier].toLowerCase()}</Badge>
+        {canSeePrices ? (
+          <>
+            <div className="pcard__price-row">
+              <span className="pcard__price">{currency(payable)}</span>
+              {tierOff > 0
+                ? <span className="pcard__mrp">{currency(product.price)}</span>
+                : off > 0 && <span className="pcard__mrp">{currency(product.mrp)}</span>}
+            </div>
+            {tierOff > 0 && (
+              <Badge tone="accent">{Math.round(tierOff)}% {TIER_LABEL[pricingTier].toLowerCase()}</Badge>
+            )}
+          </>
+        ) : (
+          /* Guest: the price is not built into the tree at all — no blur, no
+             strikethrough — so it cannot be read out of the DOM either. */
+          <div className="pcard__price-row">
+            <span className="subtle" style={{ fontSize: 'var(--fs-sm)', fontWeight: 600 }}>
+              Price on registration
+            </span>
+          </div>
         )}
         {out
           ? <Badge tone="danger" dot>Out of stock</Badge>
@@ -85,7 +97,11 @@ export default function ProductCard({ product }) {
       </div>
 
       <div className="pcard__foot">
-        {line ? (
+        {!canSeePrices ? (
+          <Button variant="secondary" block icon="store" to="/register">
+            Register to order
+          </Button>
+        ) : line ? (
           <Button variant="soft" block icon="check" to="/shop/cart">
             {line.quantity} in cart
           </Button>

@@ -170,7 +170,12 @@ export const router = createBrowserRouter([
       {
         path: 'shop',
         element: (
-          <ProtectedRoute allow={ROLES.VENDOR}>
+          <ProtectedRoute
+            allow={ROLES.VENDOR}
+            // A guest browses the catalogue and the About page. Everything
+            // else in this segment needs an account the server will accept.
+            guestAllows={['/shop', '/shop/products/*', '/shop/about']}
+          >
             <StorefrontLayout />
           </ProtectedRoute>
         ),

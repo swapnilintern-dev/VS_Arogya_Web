@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import * as authService from '../services/authService';
 import { UNAUTHORIZED_EVENT } from '../services/http';
-import { ROLES, ROLE_LABELS, homeForRole } from '../constants/roles';
+import { ROLES, ROLE_LABELS, homeForRole, canSeePrices } from '../constants/roles';
 import { tierForSession } from '../utils/pricing';
 
 /**
@@ -73,6 +73,16 @@ export function AuthProvider({ children }) {
     outletId: session?.role === ROLES.OUTLET ? session.id : null,
     /** Which rate card this buyer is on — see utils/pricing.js. */
     pricingTier: tierForSession(session),
+    /**
+     * Signed in by email OTP with no usable account. The server refuses this
+     * token on every protected route, so the storefront shows the catalogue
+     * and nothing else.
+     */
+    isGuest: session?.role === ROLES.GUEST,
+    /** Whether to render prices and ordering at all — see constants/roles.js. */
+    canSeePrices: canSeePrices(session),
+    /** "Not Registered" | "Pending" | "Rejected" | "Approved" */
+    approvalStatus: session?.approvalStatus || null,
   }), [session, booting, signIn, signInWithOtp, adoptSession, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

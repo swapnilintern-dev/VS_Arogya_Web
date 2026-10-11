@@ -33,6 +33,9 @@ const SORTS = [
   { value: 'name', label: 'Name A–Z' },
 ];
 
+/** A guest sees no prices, so sorting by them is not offered. */
+const GUEST_SORTS = SORTS.filter((o) => o.value === 'relevance' || o.value === 'name');
+
 const PAGE_SIZE = 24;
 
 /**
@@ -41,7 +44,7 @@ const PAGE_SIZE = 24;
  * top-bar search and the category cards land here with `?q=` / `?category=`.
  */
 export default function VendorHome() {
-  const { session } = useAuth();
+  const { session, canSeePrices } = useAuth();
   const [params, setParams] = useSearchParams();
   const products = useAsync(listProducts, []);
   const banners = useAsync(listBanners, []);
@@ -136,9 +139,13 @@ export default function VendorHome() {
     <>
       <section className="section">
         <h1 style={{ fontSize: 'var(--fs-xl)' }}>
-          {session?.name ? `Welcome back, ${session.name}` : 'Welcome back'}
+          {session?.name ? `Welcome back, ${session.name}` : 'Welcome'}
         </h1>
-        <p className="page__sub">Order medicines, vaccines and lifesaving injections for your counter.</p>
+        <p className="page__sub">
+          {canSeePrices
+            ? 'Order medicines, vaccines and lifesaving injections for your counter.'
+            : 'Browse the VS Arogya catalogue. Prices and ordering open up once your pharmacy is registered and approved.'}
+        </p>
       </section>
 
       {!filtersOn && banner && (
@@ -211,7 +218,7 @@ export default function VendorHome() {
         </section>
       )}
 
-      {!filtersOn && liveCoupons.length > 0 && (
+      {!filtersOn && canSeePrices && liveCoupons.length > 0 && (
         <section className="section">
           <div className="section__head"><h2 className="section__title">Offers for you</h2></div>
           <div className="grid grid--3">
@@ -268,7 +275,7 @@ export default function VendorHome() {
               <SearchInput value={query} onChange={setQuery} placeholder="Search by name, brand, SKU or manufacturer…" />
             </div>
             <div style={{ flex: '0 1 220px' }}>
-              <Select options={SORTS} value={sort} onChange={(e) => setSort(e.target.value)} />
+              <Select options={canSeePrices ? SORTS : GUEST_SORTS} value={sort} onChange={(e) => setSort(e.target.value)} />
             </div>
             {filtersOn && <Button variant="ghost" icon="x" onClick={clearAll}>Clear</Button>}
           </div>
