@@ -1,14 +1,18 @@
 import { Link } from 'react-router-dom';
 import Icon from '../../components/feedback/Icon';
+import { useAuth } from '../../context/AuthContext';
 
 /** Mirrors RegistrationSuccessScreen: the three stages that follow an application. */
 const STAGES = [
   ['file', 'Application review', 'Our team verifies your drug license, GST details and store information.'],
   ['phone', 'Verification call', 'We may call the number you registered to confirm a few details.'],
-  ['check', 'Account activation', 'Once approved, your login credentials arrive by email and you can start ordering.'],
+  ['check', 'Account activation', 'Once approved you get an email. Sign in again with your email OTP and prices and ordering unlock.'],
 ];
 
 export default function RegisterSuccessPage() {
+  // A guest who registered from the storefront goes back to browsing it.
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="auth__form text-center">
       <span
@@ -35,8 +39,12 @@ export default function RegisterSuccessPage() {
         ))}
       </div>
 
-      <Link to="/login" className="btn btn--primary btn--lg btn--block" style={{ marginTop: 'var(--sp-6)' }}>
-        Back to sign in
+      <Link
+        to={isAuthenticated ? '/shop' : '/login'}
+        className="btn btn--primary btn--lg btn--block"
+        style={{ marginTop: 'var(--sp-6)' }}
+      >
+        {isAuthenticated ? 'Go to dashboard' : 'Back to sign in'}
       </Link>
     </div>
   );

@@ -25,7 +25,7 @@ const COPY = {
     tone: 'warning',
     icon: 'clock',
     title: 'Your registration is under review',
-    body: 'Our team is verifying your documents. Prices and ordering open up as soon as it is approved — you will get an email.',
+    body: 'Our team is verifying your documents. You will get an email once it is approved — then sign in again with your email OTP to see prices and order.',
     cta: null,
   },
   [APPROVAL.REJECTED]: {
