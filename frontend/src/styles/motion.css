@@ -1,0 +1,168 @@
+/* ==========================================================================
+   VS Arogya — motion
+
+   The brief for this platform is "calm, medical, trustworthy", so the motion
+   here is deliberately small: things fade and rise a few pixels, surfaces lift
+   on hover, and the only thing that really moves is the brand mark on the sign
+   in screen. Nothing loops forever in the operator's field of view, because
+   staff keep these dashboards open all day.
+
+   Toasts, modals, drawers and skeletons bring their OWN animations in
+   components.css — this file does not restate them. What it adds is the page
+   entrance, hover physics for surfaces, focus rings, and the brand mark. The
+   reduced-motion block at the bottom covers both sets.
+   ========================================================================== */
+
+/* --- Keyframes ----------------------------------------------------------- */
+
+@keyframes vsa-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* The mark settles in: a short lift with a touch of overshoot. */
+@keyframes vsa-mark-in {
+  from { opacity: 0; transform: scale(0.82) rotate(-6deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+/* One ring that breathes outward behind the logo, then stops. */
+@keyframes vsa-halo {
+  0%   { transform: scale(0.9); opacity: 0.5; }
+  70%  { transform: scale(1.28); opacity: 0; }
+  100% { transform: scale(1.28); opacity: 0; }
+}
+
+/* --- Page + section entrance --------------------------------------------- */
+
+/* Every routed page fades up once. Keyed on the pathname in App.jsx so it
+   replays on navigation, not just on first mount. */
+.page-enter { animation: vsa-rise var(--t-base) var(--ease) both; }
+
+/* Opt-in stagger for a grid of cards. Capped at six steps so a long dashboard
+   never feels like it is dealing cards one at a time. */
+.stagger > * { animation: vsa-rise var(--t-base) var(--ease) both; }
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 45ms; }
+.stagger > *:nth-child(3) { animation-delay: 90ms; }
+.stagger > *:nth-child(4) { animation-delay: 135ms; }
+.stagger > *:nth-child(5) { animation-delay: 180ms; }
+.stagger > *:nth-child(n + 6) { animation-delay: 220ms; }
+
+/* --- Surfaces ------------------------------------------------------------- */
+
+/* A card that leads somewhere lifts; a static one does not, which is how the
+   eye tells them apart before the cursor does. */
+.card {
+  transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease);
+}
+a.card:hover,
+button.card:hover,
+.card--interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-raised);
+  border-color: var(--border-brand);
+}
+
+/* Product cards lift a little further and lean into their photo. */
+.pcard { transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease); }
+.pcard:hover { transform: translateY(-3px); box-shadow: var(--shadow-raised); }
+.pcard__media img { transition: transform var(--t-slow) var(--ease); }
+.pcard:hover .pcard__media img { transform: scale(1.045); }
+
+.stat { transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease); }
+a.stat:hover, button.stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-raised); }
+
+/* --- Controls -------------------------------------------------------------- */
+
+.btn {
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+.btn:active:not(:disabled) { transform: translateY(1px); }
+
+/* One focus treatment for every control, in the brand green. */
+.btn:focus-visible,
+.chip:focus-visible,
+.segmented__item:focus-visible { box-shadow: var(--brand-ring); outline: none; }
+
+.input,
+.select,
+.textarea {
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+.input:focus,
+.select:focus,
+.textarea:focus { box-shadow: var(--brand-ring); outline: none; }
+
+.chip,
+.segmented__item {
+  transition: background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+
+/* --- Brand mark ------------------------------------------------------------ */
+
+/* The sidebar / topbar mark: settles in on load, then only reacts to hover. */
+.sidebar__mark {
+  animation: vsa-mark-in var(--t-slow) var(--ease-spring) both;
+  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease);
+}
+.sidebar__brand:hover .sidebar__mark,
+.store__brand:hover .sidebar__mark {
+  transform: scale(1.06) rotate(-3deg);
+  box-shadow: 0 6px 18px rgba(19, 56, 42, 0.22);
+}
+
+/* The lockup on the sign-in screen, with a single halo pulse behind it. */
+.brandmark {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  animation: vsa-mark-in 520ms var(--ease-spring) both;
+}
+.brandmark img { position: relative; z-index: 1; display: block; }
+.brandmark::after {
+  content: '';
+  position: absolute;
+  inset: -9%;
+  border-radius: 50%;
+  border: 2px solid var(--brand-500);
+  animation: vsa-halo 1.9s var(--ease) 420ms 1 both;
+  pointer-events: none;
+}
+
+/* --- Reduced motion -------------------------------------------------------- */
+/* Honour the OS setting: keep colour and shadow transitions, drop every
+   movement and every loop — including the ones components.css owns. The
+   skeleton becomes a flat tint so a loading table still reads differently
+   from a loaded one. */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .stagger > *,
+  .sidebar__mark,
+  .brandmark,
+  .toast,
+  .modal,
+  .drawer,
+  .scrim,
+  .drawer-scrim {
+    animation: none !important;
+  }
+  .brandmark::after { display: none; }
+  .skeleton { animation: none; background-image: none; background-color: var(--surface-sunken); }
+  .spinner { animation-duration: 1.4s; }
+  a.card:hover,
+  button.card:hover,
+  .card--interactive:hover,
+  a.stat:hover,
+  button.stat:hover,
+  .pcard:hover { transform: none; }
+  .pcard:hover .pcard__media img { transform: none; }
+  .btn:active:not(:disabled) { transform: none; }
+  .sidebar__brand:hover .sidebar__mark,
+  .store__brand:hover .sidebar__mark { transform: none; }
+}

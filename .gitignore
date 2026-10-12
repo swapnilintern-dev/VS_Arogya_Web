@@ -7,10 +7,7 @@ dist-ssr
 .DS_Store
 
 # The backend is its own repo (swapnilintern-dev/backend_new) and lives in
-# medicine/self/server. This repo is the website only.
+# medicine/self/server. The copy here is a stale duplicate — git was tracking
+# it as an empty gitlink, which showed up as a permanent "modified" entry and
+# broke every push. This site only needs to be deployed as a frontend.
 server/
-
-# A second clone of this same repo, made while moving the app to the root.
-# Keeping it would nest a git repo inside a git repo, which git records as an
-# empty gitlink and never pushes the contents of.
-frontend_web/
