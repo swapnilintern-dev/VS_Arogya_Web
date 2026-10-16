@@ -117,6 +117,7 @@ export const ENDPOINTS = {
     shipOrder: (id) => `/shipped-order/${id}`,        // PUT  Confirm Order → Shipped
     outForDelivery: (id) => `/outof-delivery/${id}`,  // PUT  Shipped → Out for Delivery
     deliverOrder: (id) => `/delivered-prder/${id}`,   // PUT  (server spelling — do not "fix")
+    vendorDoc: (id, field) => `/vendor-doc/${id}/${field}`, // GET (admin) → the file's bytes
     allVendors: '/all-vendors',                       // GET
     activeVendors: '/active-vendors',                 // GET
     totalRevenue: '/total-revenue',                   // GET

@@ -116,7 +116,7 @@ export default function AdminVendors() {
       align: 'actions',
       render: (v) => (
         <Button size="sm" variant="secondary" onClick={() => navigate(`/admin/vendors/${v._id}`)}>
-          {v.approvalStatus === APPROVAL_STATUS.PENDING ? 'Review' : 'Open'}
+          {v.approvalStatus === APPROVAL_STATUS.PENDING ? 'Review' : 'View docs'}
         </Button>
       ),
     },

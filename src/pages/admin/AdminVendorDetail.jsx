@@ -16,6 +16,7 @@ import { getAccount, approveVendor, rejectVendor } from '../../services/vendorSe
 import { APPROVAL_STATUS } from '../../constants/orders';
 import { formatDate, daysUntil } from '../../utils/dates';
 import { initials } from '../../utils/format';
+import DocumentViewer from '../../features/DocumentViewer';
 import SendNotificationCard from '../../features/SendNotificationCard';
 
 const STATUS_TONE = {
@@ -73,9 +74,9 @@ export default function AdminVendorDetail() {
 
   const licenceDays = daysUntil(vendor.drug_lic_ex_date);
   const docs = [
-    ['Drug licence copy', vendor.drug_lic_copy, true],
-    ['Store photograph', vendor.store_pic, false],
-    ['GST certificate', vendor.gst_pdf, false],
+    ['Drug licence copy', vendor.drug_lic_copy, true, 'drug_lic_copy'],
+    ['Store photograph', vendor.store_pic, false, 'store_pic'],
+    ['GST certificate', vendor.gst_pdf, false, 'gst_pdf'],
   ];
 
   return (
@@ -134,8 +135,8 @@ export default function AdminVendorDetail() {
           <Card>
             <CardHead title="Verification documents" sub="The drug licence copy is mandatory; the rest are optional." />
             <CardBody className="stack gap-2">
-              {docs.map(([label, doc, required]) => {
-                const present = !!doc;
+              {docs.map(([label, doc, required, field]) => {
+                const present = !!doc?.url;
                 return (
                   <div className="row gap-3" key={label} style={{
                     padding: 'var(--sp-3)',
@@ -151,7 +152,12 @@ export default function AdminVendorDetail() {
                       </span>
                     </span>
                     {present
-                      ? <Badge tone="success" dot>Uploaded</Badge>
+                      ? (
+                        <>
+                          <Badge tone="success" dot>Uploaded</Badge>
+                          <DocumentViewer vendorId={vendor._id} field={field} label={label} doc={doc} />
+                        </>
+                      )
                       : <Badge tone={required ? 'danger' : 'muted'}>{required ? 'Missing' : 'Optional'}</Badge>}
                   </div>
                 );

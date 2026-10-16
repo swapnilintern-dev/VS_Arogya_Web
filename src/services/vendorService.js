@@ -19,7 +19,7 @@
 // =============================================================================
 
 import ENDPOINTS from '../config/api';
-import { get, post, put, del } from './http';
+import { get, post, put, del, requestBlob } from './http';
 import { normalizeRole, ROLES } from '../constants/roles';
 import { APPROVAL_STATUS } from '../constants/orders';
 import { normalizeOrder } from './orderService';
@@ -119,4 +119,12 @@ export async function saveAddress(address) {
 export async function deleteAddress(addressId) {
   const body = await del(ENDPOINTS.addresses.remove(addressId));
   return body?.addresses || [];
+}
+
+/**
+ * Fetches one KYC document (drug_lic_copy | store_pic | gst_pdf) through the
+ * server, which can read it even when Cloudinary blocks public PDF delivery.
+ */
+export async function fetchVendorDocument(vendorId, field) {
+  return requestBlob(ENDPOINTS.admin.vendorDoc(vendorId, field), { timeoutMs: 60000 });
 }
