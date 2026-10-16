@@ -108,10 +108,6 @@ export default function VendorProductDetail() {
   const precautions = clean(product.precautions);
   const coldChain = product.cold_stored === 'yes';
   const storage = clean(product.storage) || (coldChain ? 'Cold chain — store between 2°C and 8°C. Do not freeze.' : '');
-  const packOf = Number(product.packOf);
-  const gst = product.gstPercent === null || product.gstPercent === undefined || product.gstPercent === ''
-    ? NaN
-    : Number(product.gstPercent);
 
   const add = async () => {
     try {
@@ -185,15 +181,11 @@ export default function VendorProductDetail() {
             <CardHead title="About this product" />
             <CardBody className="stack gap-4">
               {about && <p style={{ lineHeight: 1.65, color: 'var(--text-muted)', whiteSpace: 'pre-line' }}>{about}</p>}
-              {/* Manufacturer stays on the record (admin, invoices); it is just not shown here. */}
+              {/* Manufacturer, category, pack, units per pack, HSN and GST stay on the
+                  record (admin, invoices, pricing); they are just not shown to buyers here. */}
               <KeyValue rows={[
                 clean(product.brand) && { label: 'Brand', value: clean(product.brand) },
                 composition && { label: 'Composition', value: composition },
-                clean(product.category) && { label: 'Category', value: clean(product.category) },
-                clean(product.packInfo) && { label: 'Pack', value: clean(product.packInfo) },
-                packOf > 0 && { label: 'Units per pack', value: number(packOf) },
-                clean(product.hsnCode) && { label: 'HSN code', value: <span className="mono">{clean(product.hsnCode)}</span> },
-                Number.isFinite(gst) && { label: 'GST', value: `${gst}% (included in the price)` },
                 storage && { label: 'Storage', value: storage },
                 clean(product.marketedBy) && { label: 'Marketed by', value: clean(product.marketedBy) },
               ]} />
