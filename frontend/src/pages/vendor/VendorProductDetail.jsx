@@ -177,47 +177,43 @@ export default function VendorProductDetail() {
             )}
           </Card>
 
+          {/* Order fixed by the business: name (page title) → composition →
+              marketer → storage → product information → precautions → uses →
+              side effects → directions → disclaimer. Category, pack, HSN, GST and
+              manufacturer stay on the record; they are not shown to buyers. */}
           <Card>
-            <CardHead title="About this product" />
-            <CardBody className="stack gap-4">
-              {about && <p style={{ lineHeight: 1.65, color: 'var(--text-muted)', whiteSpace: 'pre-line' }}>{about}</p>}
-              {/* Manufacturer, category, pack, units per pack, HSN and GST stay on the
-                  record (admin, invoices, pricing); they are just not shown to buyers here. */}
+            <CardBody>
               <KeyValue rows={[
-                clean(product.brand) && { label: 'Brand', value: clean(product.brand) },
-                composition && { label: 'Composition', value: composition },
-                storage && { label: 'Storage', value: storage },
-                clean(product.marketedBy) && { label: 'Marketed by', value: clean(product.marketedBy) },
+                { label: 'Composition', value: composition || NOT_AVAILABLE },
+                { label: 'Marketed by', value: clean(product.marketedBy) || NOT_AVAILABLE },
+                { label: 'Storage', value: storage || NOT_AVAILABLE },
               ]} />
             </CardBody>
           </Card>
 
           <Card>
-            <CardHead title="Medicine information" sub="From this product's record. Tap a section to expand it." />
+            <CardHead title="Product information" />
             <CardBody className="stack gap-2">
-              <InfoSection title="Composition" open empty={!composition}>
-                <p>{composition}</p>
+              {about
+                ? <p style={{ lineHeight: 1.65, color: 'var(--text-muted)', whiteSpace: 'pre-line', marginBottom: 'var(--sp-2)' }}>{about}</p>
+                : <p className="subtle" style={{ marginBottom: 'var(--sp-2)' }}>{NOT_AVAILABLE}</p>}
+              <InfoSection title="Precautions" open empty={!precautions}>
+                <p>{precautions}</p>
               </InfoSection>
-              <InfoSection title="Uses" open empty={!uses.length}>
+              <InfoSection title="Uses of product" open empty={!uses.length}>
                 {uses.length > 1 ? <Bullets items={uses} /> : <p>{uses[0]}</p>}
-              </InfoSection>
-              <InfoSection title="Directions for use" empty={!directions}>
-                <p>{directions}</p>
               </InfoSection>
               <InfoSection title={sideEffects.length ? `Side effects (${sideEffects.length})` : 'Side effects'} empty={!sideEffects.length}>
                 <Bullets items={sideEffects} />
               </InfoSection>
-              <InfoSection title="Precautions and warnings" empty={!precautions}>
-                <p>{precautions}</p>
-              </InfoSection>
-              <InfoSection title="Storage instructions" empty={!storage}>
-                <p>{storage}</p>
+              <InfoSection title="Directions for use" empty={!directions}>
+                <p>{directions}</p>
               </InfoSection>
             </CardBody>
           </Card>
 
           <Note tone="info" icon="shield">
-            <strong>Medical Information Disclaimer:</strong> {MEDICAL_DISCLAIMER}
+            <strong>Disclaimer:</strong> {MEDICAL_DISCLAIMER}
           </Note>
 
           {related.length > 0 && (
