@@ -20,12 +20,29 @@ import { currency, number } from '../../utils/format';
 import { stockStatusOf, STOCK_STATUS } from '../../utils/stock';
 import { discountPercentFor, priceFor, TIER_LABEL } from '../../utils/pricing';
 import { VENDOR_LOW_STOCK_THRESHOLD } from '../../constants/catalog';
+import { MEDICAL_DISCLAIMER, NOT_AVAILABLE, clean, listOf, splitDescription } from '../../constants/medicine';
 
 const ICON_BY_CATEGORY = {
   'Lifesaving Injections': 'thermometer',
   Vaccines: 'shield',
   Medicine: 'pill',
 };
+
+/** One collapsible medicine-information section; empty ones say so plainly. */
+function InfoSection({ title, open = false, children, empty }) {
+  return (
+    <details className="med-section" open={open}>
+      <summary>{title}</summary>
+      <div className="med-section__body">
+        {empty ? <p className="subtle">{NOT_AVAILABLE}</p> : children}
+      </div>
+    </details>
+  );
+}
+
+const Bullets = ({ items }) => (
+  <ul className="med-list">{items.map((item) => <li key={item}>{item}</li>)}</ul>
+);
 
 /** Gallery on the left, buy box on the right — the desktop product page. */
 export default function VendorProductDetail() {
@@ -39,6 +56,14 @@ export default function VendorProductDetail() {
   const [qty, setQty] = useState(1);
   const [image, setImage] = useState(0);
   const [saved, setSaved] = useState(false);
+
+  // Moving to another product (e.g. from "More in …") must not carry over the
+  // previous product's quantity, image index or saved flag.
+  useEffect(() => {
+    setQty(1);
+    setImage(0);
+    setSaved(false);
+  }, [id]);
 
   // Saved state lives on the vendor's account (GET /all-saved), which is
   // behind the auth gate — a guest has no account and the server refuses the
@@ -71,6 +96,23 @@ export default function VendorProductDetail() {
   const images = product.image?.length ? product.image : [];
   const line = cart.lineFor(product._id);
 
+  // Medicine information — straight from this product's own record.
+  const composition = clean(product.composition);
+  const { intro, usesList } = splitDescription(product.description);
+  // Only drop the description's trailing summary block when the structured
+  // fields it repeats are actually present.
+  const about = composition ? intro : clean(product.description);
+  const uses = usesList.length ? usesList : listOf(product.uses);
+  const directions = clean(product.directions);
+  const sideEffects = listOf(product.sideEffects);
+  const precautions = clean(product.precautions);
+  const coldChain = product.cold_stored === 'yes';
+  const storage = clean(product.storage) || (coldChain ? 'Cold chain — store between 2°C and 8°C. Do not freeze.' : '');
+  const packOf = Number(product.packOf);
+  const gst = product.gstPercent === null || product.gstPercent === undefined || product.gstPercent === ''
+    ? NaN
+    : Number(product.gstPercent);
+
   const add = async () => {
     try {
       await cart.add(product, qty);
@@ -100,15 +142,16 @@ export default function VendorProductDetail() {
           { label: product.title },
         ]}
         title={product.title}
-        sub={`${product.brand} · ${product.packInfo}`}
+        sub={[clean(product.brand), clean(product.packInfo)].filter(Boolean).join(' · ') || undefined}
       />
 
-      <div className="split split--wide-rail">
+      <div className="split split--wide-rail pdp">
         <div className="stack gap-4">
-          <Card>
+          <Card className="pdp__media">
             <div
               style={{
-                aspectRatio: '16 / 9',
+                // Without a photo a 16:9 tile is mostly empty space.
+                aspectRatio: images.length ? '16 / 9' : '4 / 1',
                 background: 'var(--brand-050)',
                 display: 'grid',
                 placeItems: 'center',
@@ -119,7 +162,7 @@ export default function VendorProductDetail() {
             >
               {images[image]?.url
                 ? <img src={images[image].url} alt={product.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                : <Icon name={ICON_BY_CATEGORY[product.category] || 'pill'} size={72} strokeWidth={1} />}
+                : <Icon name={ICON_BY_CATEGORY[product.category] || 'pill'} size={56} strokeWidth={1} />}
             </div>
             {images.length > 1 && (
               <CardBody className="row gap-2">
@@ -141,20 +184,49 @@ export default function VendorProductDetail() {
           <Card>
             <CardHead title="About this product" />
             <CardBody className="stack gap-4">
-              <p style={{ lineHeight: 1.65, color: 'var(--text-muted)' }}>{product.description}</p>
+              {about && <p style={{ lineHeight: 1.65, color: 'var(--text-muted)', whiteSpace: 'pre-line' }}>{about}</p>}
+              {/* Manufacturer stays on the record (admin, invoices); it is just not shown here. */}
               <KeyValue rows={[
-                { label: 'Brand', value: product.brand },
-                { label: 'Manufacturer', value: product.manufacturer },
-                { label: 'Marketed by', value: product.marketedBy },
-                { label: 'Pack', value: product.packInfo },
-                { label: 'Units per pack', value: number(product.packOf) },
-                { label: 'Category', value: product.category },
-                { label: 'HSN code', value: <span className="mono">{product.hsnCode}</span> },
-                { label: 'GST', value: `${product.gstPercent}% (included in the price)` },
-                { label: 'Storage', value: product.cold_stored === 'yes' ? 'Cold chain — 2°C to 8°C, do not freeze' : 'Below 25°C, dry and out of sunlight' },
+                clean(product.brand) && { label: 'Brand', value: clean(product.brand) },
+                composition && { label: 'Composition', value: composition },
+                clean(product.category) && { label: 'Category', value: clean(product.category) },
+                clean(product.packInfo) && { label: 'Pack', value: clean(product.packInfo) },
+                packOf > 0 && { label: 'Units per pack', value: number(packOf) },
+                clean(product.hsnCode) && { label: 'HSN code', value: <span className="mono">{clean(product.hsnCode)}</span> },
+                Number.isFinite(gst) && { label: 'GST', value: `${gst}% (included in the price)` },
+                storage && { label: 'Storage', value: storage },
+                clean(product.marketedBy) && { label: 'Marketed by', value: clean(product.marketedBy) },
               ]} />
             </CardBody>
           </Card>
+
+          <Card>
+            <CardHead title="Medicine information" sub="From this product's record. Tap a section to expand it." />
+            <CardBody className="stack gap-2">
+              <InfoSection title="Composition" open empty={!composition}>
+                <p>{composition}</p>
+              </InfoSection>
+              <InfoSection title="Uses" open empty={!uses.length}>
+                {uses.length > 1 ? <Bullets items={uses} /> : <p>{uses[0]}</p>}
+              </InfoSection>
+              <InfoSection title="Directions for use" empty={!directions}>
+                <p>{directions}</p>
+              </InfoSection>
+              <InfoSection title={sideEffects.length ? `Side effects (${sideEffects.length})` : 'Side effects'} empty={!sideEffects.length}>
+                <Bullets items={sideEffects} />
+              </InfoSection>
+              <InfoSection title="Precautions and warnings" empty={!precautions}>
+                <p>{precautions}</p>
+              </InfoSection>
+              <InfoSection title="Storage instructions" empty={!storage}>
+                <p>{storage}</p>
+              </InfoSection>
+            </CardBody>
+          </Card>
+
+          <Note tone="info" icon="shield">
+            <strong>Medical Information Disclaimer:</strong> {MEDICAL_DISCLAIMER}
+          </Note>
 
           {related.length > 0 && (
             <section>

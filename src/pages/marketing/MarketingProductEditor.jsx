@@ -39,6 +39,7 @@ const EMPTY = {
   drDisPercent: '', wholesellerPercent: '',
   lowThreshold: 10, prescriptionRequired: false, active: true,
   batch_no: '', exp_date: '', stock: '',
+  composition: '', uses: '', directions: '', sideEffects: '', precautions: '', storage: '',
 };
 
 /** What the server's add/update-product routes read from the body. */
@@ -49,6 +50,9 @@ const PRODUCT_FIELDS = [
   // sent as typed rather than coerced to numbers.
   'drDisPercent', 'wholesellerPercent',
   'lowThreshold', 'prescriptionRequired', 'active', 'badge',
+  // Medicine information (server: utils/medicineInfo.js). The website and the
+  // Flutter app both render these from the same product record.
+  'composition', 'uses', 'directions', 'sideEffects', 'precautions', 'storage',
 ];
 
 /** What a tier actually pays, for the hint under each percentage field. */
@@ -90,6 +94,8 @@ export default function MarketingProductEditor() {
       exp_date: toInputDate(product.exp_date),
       mrp: product.mrp ?? '',
       price: product.price ?? '',
+      // Stored as an array; edited one per line. The server splits on new lines.
+      sideEffects: Array.isArray(product.sideEffects) ? product.sideEffects.join('\n') : (product.sideEffects || ''),
     });
     setMedia((m) => ({ ...m, keepImages: product.image || [] }));
   }, [product]);
@@ -231,6 +237,31 @@ export default function MarketingProductEditor() {
                     value={form.description}
                     onChange={set('description')}
                   />
+                </Field>
+              </div>
+            </FormSection>
+
+            <FormSection icon="shield" title="Medicine information" sub="Shown to vendors on the website and in the app. Leave a field blank if you do not have verified information for it.">
+              <div className="form-grid">
+                <Field label="Composition" className="span-2">
+                  <Textarea placeholder="Salt and strength, e.g. Recombinant Human Erythropoietin Alfa (6000 IU)"
+                    value={form.composition} onChange={set('composition')} />
+                </Field>
+                <Field label="Uses" className="span-2">
+                  <Textarea value={form.uses} onChange={set('uses')} />
+                </Field>
+                <Field label="Directions for use" className="span-2">
+                  <Textarea value={form.directions} onChange={set('directions')} />
+                </Field>
+                <Field label="Side effects" hint="One per line" className="span-2">
+                  <Textarea value={form.sideEffects} onChange={set('sideEffects')} />
+                </Field>
+                <Field label="Precautions and warnings" className="span-2">
+                  <Textarea value={form.precautions} onChange={set('precautions')} />
+                </Field>
+                <Field label="Storage instructions" className="span-2">
+                  <Textarea placeholder="e.g. Store between 2°C and 8°C. Do not freeze."
+                    value={form.storage} onChange={set('storage')} />
                 </Field>
               </div>
             </FormSection>

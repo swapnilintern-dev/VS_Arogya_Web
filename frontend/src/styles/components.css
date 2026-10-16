@@ -407,3 +407,27 @@
 .note--danger { background: var(--danger-bg); border-color: #f7cfcb; color: #991b1b; }
 .note--success { background: var(--success-bg); border-color: var(--brand-200); color: var(--brand-800); }
 .note svg { flex: none; margin-top: 1px; }
+
+/* Medicine information sections on the product page ------------------------ */
+.med-section { border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); }
+.med-section > summary {
+  cursor: pointer; list-style: none; padding: var(--sp-3) var(--sp-4); min-height: 44px;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
+  font-weight: 600;
+}
+.med-section > summary::-webkit-details-marker { display: none; }
+.med-section > summary::after { content: '+'; font-weight: 700; color: var(--text-muted); }
+.med-section[open] > summary::after { content: '−'; }
+.med-section > summary:focus-visible { outline: 2px solid var(--brand-500); outline-offset: 2px; border-radius: var(--r-md); }
+.med-section__body { padding: 0 var(--sp-4) var(--sp-4); line-height: 1.65; color: var(--text-muted); overflow-wrap: anywhere; }
+.med-list { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; list-style: disc; }
+.med-list > li { display: list-item; }
+
+/* Product page on a single column: photo, then price & ordering, then details. */
+@media (max-width: 1180px) {
+  .pdp { display: flex; flex-direction: column; }
+  .pdp > .stack { display: contents; }
+  .pdp > .stack > * { order: 3; }
+  .pdp > .stack > .pdp__media { order: 1; }
+  .pdp > .rail { order: 2; }
+}
