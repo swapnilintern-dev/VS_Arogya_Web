@@ -6,7 +6,9 @@ import Field from '../../components/forms/Field';
 import { Input, Select, Textarea } from '../../components/forms/Input';
 import FileField from '../../components/forms/FileField';
 import Icon from '../../components/feedback/Icon';
-import { registerVendor } from '../../services/authService';
+import { registerVendor, saveSession } from '../../services/authService';
+import { useAuth } from '../../context/AuthContext';
+import { APPROVAL } from '../../constants/roles';
 import { VENDOR_TYPES, SHOP_TYPES, GST_STATUSES } from '../../constants/catalog';
 import cn from '../../utils/cn';
 
@@ -28,8 +30,13 @@ const EMPTY = {
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { session, isGuest, adoptSession } = useAuth();
+  // A guest signed in by email OTP registers under THAT address: /eotp-verify
+  // looks the vendor up by email, so any other address would leave them a
+  // guest even after approval.
+  const guestEmail = isGuest ? session.email || '' : '';
   const [step, setStep] = useState(0);
-  const [form, setForm] = useState(EMPTY);
+  const [form, setForm] = useState(() => ({ ...EMPTY, email: guestEmail }));
   const [files, setFiles] = useState({ store_pic: null, drug_lic_copy: null, gst_pdf: null });
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState(null);
@@ -88,6 +95,13 @@ export default function RegisterPage() {
     try {
       // The server stores gst_status as "yes" | "no"; the label stays on the form.
       await registerVendor({ ...form, gst_status: gstRegistered ? 'yes' : 'no' }, files);
+      if (isGuest) {
+        // The guest token stays a guest token until they sign in again after
+        // approval, but the storefront should already say "under review".
+        const next = { ...session, approvalStatus: APPROVAL.PENDING };
+        saveSession(next);
+        adoptSession(next);
+      }
       navigate('/register/success', { replace: true });
     } catch (err) {
       setSubmitError(err.message || 'Registration failed. Please try again.');
@@ -103,7 +117,9 @@ export default function RegisterPage() {
           <h1 style={{ fontSize: 'var(--fs-xl)' }}>Vendor registration</h1>
           <p className="page__sub">Step {step + 1} of 4 · {STEPS[step]}</p>
         </div>
-        <Link to="/login" className="btn btn--ghost btn--sm">Back to sign in</Link>
+        {isGuest
+          ? <Link to="/shop" className="btn btn--ghost btn--sm">Back to shop</Link>
+          : <Link to="/login" className="btn btn--ghost btn--sm">Back to sign in</Link>}
       </div>
 
       <div className="steps" style={{ marginBottom: 'var(--sp-5)' }}>
@@ -139,7 +155,9 @@ export default function RegisterPage() {
               value={form.mobile_no} onChange={(e) => set('mobile_no')(e.target.value.replace(/\D/g, '').slice(0, 10))}
               error={errors.mobile_no} />
             <Input label="Email address" required type="email" placeholder="name@email.com"
-              value={form.email} onChange={set('email')} error={errors.email} />
+              value={form.email} onChange={set('email')} error={errors.email}
+              readOnly={!!guestEmail}
+              hint={guestEmail ? 'The address you signed in with — approval unlocks prices for it.' : undefined} />
             <Field label="Full address" required className="span-2" error={errors.full_address}>
               <Textarea placeholder="Street address, area, landmark" value={form.full_address} onChange={set('full_address')} />
             </Field>
@@ -210,7 +228,7 @@ export default function RegisterPage() {
           ]} />
           <Note tone="info">
             Your application goes to the VS Arogya admin team for verification. Once approved you will
-            receive your login credentials by email — you cannot sign in until then.
+            get an email — sign in again with your email OTP and prices and ordering unlock.
           </Note>
         </div>
       )}

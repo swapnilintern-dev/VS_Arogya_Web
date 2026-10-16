@@ -88,7 +88,7 @@ export default function AdminUsers() {
       header: '',
       align: 'actions',
       render: (u) => (u._role === ROLES.VENDOR
-        ? <Button size="sm" variant="secondary" to={`/admin/vendors/${u._id}`}>Open</Button>
+        ? <Button size="sm" variant="secondary" icon="eye" to={`/admin/vendors/${u._id}`}>View docs</Button>
         : null),
     },
   ];
