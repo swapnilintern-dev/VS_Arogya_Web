@@ -182,7 +182,7 @@ export default function DeliveryTaskDetail() {
 
           <Card>
             <CardHead title="Order lines" />
-            <OrderLinesTable items={order.orderItems} showBatches={false} />
+            <OrderLinesTable items={order.orderItems} showBatches={false} couponCode={order.couponCode} couponDiscount={order.couponDiscount} />
           </Card>
         </div>
 

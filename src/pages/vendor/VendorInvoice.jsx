@@ -61,7 +61,7 @@ export default function VendorInvoice() {
         <div className="split">
           <Card>
             <CardHead title="Invoice lines" sub="Exactly as they appear on the tax invoice" />
-            <OrderLinesTable items={order.data.orderItems} />
+            <OrderLinesTable items={order.data.orderItems} couponCode={order.data.couponCode} couponDiscount={order.data.couponDiscount} />
           </Card>
 
           <div className="rail">

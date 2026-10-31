@@ -34,6 +34,9 @@ export default function InvoiceSummary({ invoice, order }) {
           has(invoice.cgst) ? { label: 'CGST', value: currency(invoice.cgst) } : null,
           has(invoice.sgst) ? { label: 'SGST', value: currency(invoice.sgst) } : null,
           has(invoice.igst) ? { label: 'IGST', value: currency(invoice.igst) } : null,
+          has(order?.couponDiscount)
+            ? { label: `Coupon${order.couponCode ? ` (${order.couponCode})` : ''}`, value: `−${currency(order.couponDiscount)}` }
+            : null,
           has(grandTotal) ? { label: 'Grand total', value: currency(grandTotal), total: true } : null,
         ]}
       />

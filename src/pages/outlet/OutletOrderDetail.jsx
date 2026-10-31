@@ -99,7 +99,7 @@ export default function OutletOrderDetail() {
         <div className="stack gap-4">
           <Card>
             <CardHead title="Items" sub="With the lots this bill consumed" />
-            <OrderLinesTable items={order.orderItems} />
+            <OrderLinesTable items={order.orderItems} couponCode={order.couponCode} couponDiscount={order.couponDiscount} />
           </Card>
 
           <Card>

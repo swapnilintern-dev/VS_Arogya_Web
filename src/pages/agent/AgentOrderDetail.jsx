@@ -47,7 +47,7 @@ export default function AgentOrderDetail() {
         <div className="stack gap-4">
           <Card>
             <CardHead title="Items" sub="Which medicine and how much" />
-            <OrderLinesTable items={order.orderItems} showBatches={false} />
+            <OrderLinesTable items={order.orderItems} couponCode={order.couponCode} couponDiscount={order.couponDiscount} showBatches={false} />
           </Card>
 
           <Card>

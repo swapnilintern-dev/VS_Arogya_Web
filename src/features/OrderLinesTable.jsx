@@ -8,9 +8,16 @@ import Badge from '../components/common/Badge';
  * `freeQty` is NEVER priced — it is handed over at no charge and printed in the
  * invoice's FREE GOODS column, exactly as server/utils/freeGoods.js treats it.
  * A line that consumed more than one lot shows every allocation.
+ *
+ * A coupon (order.couponCode / couponDiscount, set by the server at
+ * place-order) is shown as its own line; the order total is after it, which is
+ * what order.totalAmount and the invoice charge.
  */
-export default function OrderLinesTable({ items, showBatches = true }) {
-  const total = items.reduce((s, it) => s + it.orderPrice * it.quantity, 0);
+export default function OrderLinesTable({ items, showBatches = true, couponCode, couponDiscount }) {
+  const lineSum = items.reduce((s, it) => s + it.orderPrice * it.quantity, 0);
+  const discount = Number(couponDiscount) > 0 ? Number(couponDiscount) : 0;
+  const total = Math.max(0, lineSum - discount);
+  const span = showBatches ? 5 : 4;
 
   return (
     <div className="table-wrap">
@@ -64,8 +71,20 @@ export default function OrderLinesTable({ items, showBatches = true }) {
           ))}
         </tbody>
         <tfoot>
+          {discount > 0 && (
+            <>
+              <tr>
+                <td colSpan={span} className="cell-num">Items total</td>
+                <td className="cell-num">{currency(lineSum)}</td>
+              </tr>
+              <tr>
+                <td colSpan={span} className="cell-num">Coupon{couponCode ? ` (${couponCode})` : ''}</td>
+                <td className="cell-num">−{currency(discount)}</td>
+              </tr>
+            </>
+          )}
           <tr>
-            <td colSpan={showBatches ? 5 : 4} className="cell-num" style={{ fontWeight: 700 }}>Order total</td>
+            <td colSpan={span} className="cell-num" style={{ fontWeight: 700 }}>Order total</td>
             <td className="cell-num" style={{ fontWeight: 800, fontSize: 'var(--fs-md)' }}>{currency(total)}</td>
           </tr>
         </tfoot>

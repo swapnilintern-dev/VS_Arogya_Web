@@ -136,7 +136,7 @@ export default function MarketingOrderDetail() {
         <div className="stack gap-4">
           <Card>
             <CardHead title="Items" sub="Each line shows the exact lots it consumes" />
-            <OrderLinesTable items={order.orderItems} />
+            <OrderLinesTable items={order.orderItems} couponCode={order.couponCode} couponDiscount={order.couponDiscount} />
           </Card>
           <Card>
             <CardHead title="Status timeline" />

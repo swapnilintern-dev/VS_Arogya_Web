@@ -98,7 +98,7 @@ export default function AdminOrderDetail() {
         <div className="stack gap-4">
           <Card>
             <CardHead title="Items" sub="With the FEFO batch breakdown recorded at order creation" />
-            <OrderLinesTable items={order.orderItems} />
+            <OrderLinesTable items={order.orderItems} couponCode={order.couponCode} couponDiscount={order.couponDiscount} />
           </Card>
 
           <Card>

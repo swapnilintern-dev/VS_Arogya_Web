@@ -146,7 +146,7 @@ export default function VendorOrderDetail() {
         <div className="stack gap-4">
           <Card>
             <CardHead title="Items" sub="Batch and expiry are recorded on every line" />
-            <OrderLinesTable items={order.orderItems} />
+            <OrderLinesTable items={order.orderItems} couponCode={order.couponCode} couponDiscount={order.couponDiscount} />
           </Card>
 
           <Card>
