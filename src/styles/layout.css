@@ -338,7 +338,8 @@ a.stat:hover, button.stat:hover { border-color: var(--brand-500); transform: tra
 .pcard__price { font-size: var(--fs-md); font-weight: 800; }
 .pcard__mrp { font-size: var(--fs-sm); color: var(--text-subtle); text-decoration: line-through; }
 .pcard__off { font-size: var(--fs-xs); font-weight: 800; color: var(--brand-700); }
-.pcard__foot { display: flex; align-items: center; gap: var(--sp-2); padding: 0 var(--sp-4) var(--sp-4); }
+.pcard__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); padding: 0 var(--sp-4) var(--sp-4); }
+.pcard__foot > .btn { flex: 1 1 110px; }
 
 /* --- Qty stepper --------------------------------------------------------- */
 .qty { display: inline-flex; align-items: center; border: 1px solid var(--border-strong); border-radius: var(--r-btn); overflow: hidden; background: var(--surface); }

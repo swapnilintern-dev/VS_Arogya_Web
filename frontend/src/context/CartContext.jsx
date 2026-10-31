@@ -52,6 +52,17 @@ export function CartProvider({ children }) {
       total: Math.round(subtotal * 100) / 100,
       lineFor: (productId) => lines.find((l) => l.product._id === productId) || null,
       add: (product, qty = 1) => run(() => cartService.addToCart(product, qty)),
+      /**
+       * "Buy now": make sure the cart holds at least `qty` of this product, then
+       * the caller opens checkout. The server's add-cart adds ONE unit per call
+       * and increments an existing line, so only the shortfall is added — a
+       * second click never doubles the quantity.
+       */
+      buyNow: (product, qty = 1) => {
+        const have = lines.find((l) => l.product._id === product._id)?.quantity || 0;
+        const need = Math.max(0, qty - have);
+        return need > 0 ? run(() => cartService.addToCart(product, need)) : Promise.resolve();
+      },
       increase: (productId) => run(() => cartService.increaseItem(productId)),
       decrease: (productId) => run(() => cartService.decreaseItem(productId)),
       remove: (productId) => run(() => cartService.removeItem(productId)),

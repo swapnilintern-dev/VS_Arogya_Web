@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Badge from '../../components/common/Badge';
 import Button from '../../components/common/Button';
 import Icon from '../../components/feedback/Icon';
@@ -31,6 +32,8 @@ export default function ProductCard({ product }) {
   const cart = useCart();
   const { pricingTier, canSeePrices } = useAuth();
   const toast = useToast();
+  const navigate = useNavigate();
+  const [buying, setBuying] = useState(false);
 
   const out = stockStatusOf(product.stock, product.lowThreshold) === STOCK_STATUS.OUT;
   const low = !out && product.stock <= VENDOR_LOW_STOCK_THRESHOLD;
@@ -47,6 +50,18 @@ export default function ProductCard({ product }) {
       toast.success(`${product.title} added to cart.`);
     } catch (err) {
       toast.error(err.message);
+    }
+  };
+
+  const buyNow = async () => {
+    setBuying(true);
+    try {
+      await cart.buyNow(product, 1);
+      navigate('/shop/checkout');
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setBuying(false);
     }
   };
 
@@ -101,14 +116,21 @@ export default function ProductCard({ product }) {
           <Button variant="secondary" block icon="store" to="/register">
             Register to order
           </Button>
-        ) : line ? (
-          <Button variant="soft" block icon="check" to="/shop/cart">
-            {line.quantity} in cart
-          </Button>
         ) : (
-          <Button variant="primary" block icon="cart" disabled={out || cart.busy} onClick={add}>
-            Add to cart
-          </Button>
+          <>
+            {line ? (
+              <Button variant="soft" icon="check" to="/shop/cart">
+                {line.quantity} in cart
+              </Button>
+            ) : (
+              <Button variant="secondary" icon="cart" disabled={out || cart.busy || buying} onClick={add}>
+                Add to cart
+              </Button>
+            )}
+            <Button variant="primary" loading={buying} disabled={out || (cart.busy && !buying)} onClick={buyNow}>
+              Buy now
+            </Button>
+          </>
         )}
       </div>
     </article>

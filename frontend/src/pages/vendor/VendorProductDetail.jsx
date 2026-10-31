@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import PageHeader from '../../components/common/PageHeader';
 import { Card, CardHead, CardBody } from '../../components/common/Card';
 import Badge from '../../components/common/Badge';
@@ -50,6 +50,8 @@ export default function VendorProductDetail() {
   const cart = useCart();
   const { pricingTier, canSeePrices } = useAuth();
   const toast = useToast();
+  const navigate = useNavigate();
+  const [buying, setBuying] = useState(false);
   const { data: product, loading, error, reload } = useAsync(() => getProduct(id), [id]);
   const all = useAsync(listProducts, []);
 
@@ -115,6 +117,18 @@ export default function VendorProductDetail() {
       toast.success(`${qty} × ${product.title} added to cart.`);
     } catch (err) {
       toast.error(err.message);
+    }
+  };
+
+  const buyNow = async () => {
+    setBuying(true);
+    try {
+      await cart.buyNow(product, qty);
+      navigate('/shop/checkout');
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setBuying(false);
     }
   };
 
@@ -291,9 +305,16 @@ export default function VendorProductDetail() {
                   <KeyValue rows={[
                     { label: `${qty} × ${currency(payable)}`, value: currency(payable * qty), total: true },
                   ]} />
-                  <Button variant="primary" size="lg" block icon="cart" loading={cart.busy} onClick={add}>
-                    Add to cart
-                  </Button>
+                  <div className="buy-actions">
+                    <Button variant="secondary" size="lg" icon="cart" loading={cart.busy && !buying}
+                      disabled={buying} onClick={add}>
+                      Add to cart
+                    </Button>
+                    <Button variant="primary" size="lg" icon="arrowRight" loading={buying}
+                      disabled={cart.busy && !buying} onClick={buyNow}>
+                      Buy now
+                    </Button>
+                  </div>
                   {line && (
                     <Link to="/shop/cart" className="btn btn--soft btn--block">
                       {line.quantity} already in your cart — view cart

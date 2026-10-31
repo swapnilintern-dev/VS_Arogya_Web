@@ -431,3 +431,7 @@
   .pdp > .stack > .pdp__media { order: 1; }
   .pdp > .rail { order: 2; }
 }
+
+/* Add to cart + Buy now, side by side, stacking when there is no room. */
+.buy-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+.buy-actions > .btn { flex: 1 1 140px; }
