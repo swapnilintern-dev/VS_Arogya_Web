@@ -10,7 +10,7 @@ export const MEDICINE_CATEGORIES = [
 ];
 
 /** _vendorTypes, lib/vendor_registration_screen.dart */
-export const VENDOR_TYPES = ['Shop / Pharmacy', 'Hospital / Clinic'];
+export const VENDOR_TYPES = ['Shop / Pharmacy', 'Hospital / Clinic', 'Doctor'];
 
 /** _shopTypes */
 export const SHOP_TYPES = [
